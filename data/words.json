@@ -1,0 +1,7 @@
+[
+  { "hieroglyph": "你好", "translation": "привет", "pinyin": "nǐ hǎo", "tone": 3 },
+  { "hieroglyph": "谢谢", "translation": "спасибо", "pinyin": "xiè xie", "tone": 4 },
+  { "hieroglyph": "好", "translation": "хорошо", "pinyin": "hǎo", "tone": 3 },
+  { "hieroglyph": "水", "translation": "вода", "pinyin": "shuǐ", "tone": 3 },
+  { "hieroglyph": "火", "translation": "огонь", "pinyin": "huǒ", "tone": 3 }
+]
