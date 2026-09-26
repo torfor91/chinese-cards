@@ -1,5 +1,11 @@
 // app.js — точка входа приложения
 
+const DEBUG = true;
+
+if (DEBUG) {
+  console.log('Загружен модуль app.js');
+}
+
 import { startSession, getCurrentCard, answerCard, isSessionFinished } from './session.js';
 import { getStats, getProgressPercent } from './stats.js';
 import { loadCards } from './storage.js';
@@ -61,6 +67,9 @@ function renderStats() {
   const percent = getProgressPercent();
   document.getElementById('stats').textContent =
     `Всего: ${stats.total}, выучено: ${stats.learned} (${percent}%)`;
+    if (DEBUG) {
+  console.table(getStats());
+}
 }
 
 document.addEventListener('DOMContentLoaded', initApp);
