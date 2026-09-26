@@ -1,33 +1,25 @@
 // storage.js — работа с localStorage
 
 const STORAGE_KEY = 'chinese-cards';
-const SCHEMA_VERSION = 1;
 
 /**
- * Сохраняет карточки в localStorage с версией схемы.
+ * Сохраняет массив карточек.
  * @param {Array} cards
  */
 function saveCards(cards) {
-  const payload = { version: SCHEMA_VERSION, cards };
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(cards));
 }
 
 /**
- * Загружает карточки из localStorage.
+ * Загружает карточки.
  * @returns {Array}
  */
 function loadCards() {
   const raw = localStorage.getItem(STORAGE_KEY);
   if (!raw) return [];
-
   try {
     const parsed = JSON.parse(raw);
-
-    if (parsed.version !== SCHEMA_VERSION) {
-      console.warn('Версия схемы устарела, данные могут быть несовместимы');
-    }
-
-    return Array.isArray(parsed.cards) ? parsed.cards : [];
+    return Array.isArray(parsed) ? parsed : [];
   } catch (e) {
     console.warn('Ошибка чтения localStorage:', e);
     return [];
@@ -42,9 +34,9 @@ function clearCards() {
 }
 
 /**
- * Добавляет карточку в хранилище.
+ * Добавляет карточку.
  * @param {Object} card
- * @returns {Array} обновлённый список
+ * @returns {Array}
  */
 function addCard(card) {
   const cards = loadCards();
@@ -53,6 +45,15 @@ function addCard(card) {
   return cards;
 }
 
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { saveCards, loadCards, clearCards, addCard };
+/**
+ * Удаляет карточку по id.
+ * @param {string} id
+ * @returns {Array}
+ */
+function removeCard(id) {
+  const cards = loadCards().filter((c) => c.id !== id);
+  saveCards(cards);
+  return cards;
 }
+
+export { saveCards, loadCards, clearCards, addCard, removeCard };

@@ -3,22 +3,21 @@
 import { loadCards } from './storage.js';
 
 /**
- * Считает общую статистику по карточкам.
- * @returns {Object} всего, выучено, в процессе, новых
+ * Общая статистика.
+ * @returns {Object}
  */
 function getStats() {
   const cards = loadCards();
   const total = cards.length;
-  const learned = cards.filter((c) => c.repetitions >= 3).length;
-  const inProgress = cards.filter((c) => c.repetitions > 0 && c.repetitions < 3).length;
-  const fresh = cards.filter((c) => c.repetitions === 0).length;
-
+  const learned = cards.filter((c) => (c.repetitions || 0) >= 3).length;
+  const inProgress = cards.filter((c) => (c.repetitions || 0) > 0 && (c.repetitions || 0) < 3).length;
+  const fresh = cards.filter((c) => (c.repetitions || 0) === 0).length;
   return { total, learned, inProgress, fresh };
 }
 
 /**
- * Считает процент выученных карточек.
- * @returns {number} процент 0–100
+ * Процент выученных.
+ * @returns {number}
  */
 function getProgressPercent() {
   const { total, learned } = getStats();

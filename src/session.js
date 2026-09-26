@@ -4,18 +4,14 @@ import { getDueCards, calcNextReview } from './srs.js';
 import { loadCards, saveCards } from './storage.js';
 
 /**
- * Запускает сессию повторения.
- * @returns {Object} состояние сессии
+ * Запускает сессию.
+ * @returns {Object}
  */
 function startSession() {
-  const allCards = loadCards();
-  if (!Array.isArray(allCards)) {
-    console.warn('storage вернул не массив, сброс');
-    return { queue: [], currentIndex: 0, correctCount: 0, wrongCount: 0 };
-  }
-  const dueCards = getDueCards(allCards);
+  const all = loadCards();
+  const due = getDueCards(all);
   return {
-    queue: dueCards,
+    queue: due,
     currentIndex: 0,
     correctCount: 0,
     wrongCount: 0,
@@ -23,7 +19,7 @@ function startSession() {
 }
 
 /**
- * Возвращает текущую карточку сессии.
+ * Текущая карточка.
  * @param {Object} session
  * @returns {Object|null}
  */
@@ -32,29 +28,25 @@ function getCurrentCard(session) {
 }
 
 /**
- * Обрабатывает ответ пользователя.
+ * Обрабатывает ответ.
  * @param {Object} session
- * @param {number} quality - оценка 0–5
- * @returns {Object} обновлённая сессия
+ * @param {number} quality
+ * @returns {Object}
  */
 function answerCard(session, quality) {
   const card = getCurrentCard(session);
   if (!card) return session;
 
-  const updated = calcNextReview(card, quality);
-  Object.assign(card, updated);
+  Object.assign(card, calcNextReview(card, quality));
 
-  if (quality >= 3) {
-    session.correctCount += 1;
-  } else {
-    session.wrongCount += 1;
-  }
+  if (quality >= 3) session.correctCount += 1;
+  else session.wrongCount += 1;
 
-  const allCards = loadCards();
-  const index = allCards.findIndex((c) => c.id === card.id);
-  if (index !== -1) {
-    allCards[index] = card;
-    saveCards(allCards);
+  const all = loadCards();
+  const idx = all.findIndex((c) => c.id === card.id);
+  if (idx !== -1) {
+    all[idx] = card;
+    saveCards(all);
   }
 
   session.currentIndex += 1;
@@ -62,7 +54,7 @@ function answerCard(session, quality) {
 }
 
 /**
- * Проверяет, завершена ли сессия.
+ * Сессия завершена?
  * @param {Object} session
  * @returns {boolean}
  */
