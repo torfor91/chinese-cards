@@ -9,6 +9,10 @@ import { loadCards, saveCards } from './storage.js';
  */
 function startSession() {
   const allCards = loadCards();
+  if (!Array.isArray(allCards)) {
+    console.warn('storage вернул не массив, сброс');
+    return { queue: [], currentIndex: 0, correctCount: 0, wrongCount: 0 };
+  }
   const dueCards = getDueCards(allCards);
   return {
     queue: dueCards,
