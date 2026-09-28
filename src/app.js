@@ -1,6 +1,6 @@
 // app.js — точка входа
 
-import { createCard, validateCard } from './card.js';
+import { createCard, validateCard, assertValidCard } from './card.js';
 import { addCard, loadCards, removeCard, saveCards } from './storage.js';
 import { startSession, getCurrentCard, answerCard, isSessionFinished } from './session.js';
 import { getStats, getProgressPercent } from './stats.js';
@@ -46,15 +46,27 @@ function bindSession() {
 }
 
 function onStartSession() {
-  session = startSession();
-  if (session.queue.length === 0) {
-    alert('Нет карточек для повторения. Добавьте карточки или подождите.');
+  try {
+    session = startSession();
+  } catch (e) {
+    if (e.name === 'SessionError') {
+      alert(e.message);
+      return;
+    }
+    alert('Неизвестная ошибка: ' + e.message);
     return;
   }
   answerShown = false;
   document.getElementById('session-empty').classList.add('hidden');
   document.getElementById('card-view').classList.remove('hidden');
   renderCard();
+}
+
+function onShowAnswer() {
+  answerShown = true;
+  document.getElementById('card-translation').classList.remove('hidden');
+  document.getElementById('show-answer').classList.add('hidden');
+  document.getElementById('answer-buttons').classList.remove('hidden');
 }
 
 function renderCard() {
@@ -76,13 +88,6 @@ function renderCard() {
   document.getElementById('show-answer').classList.remove('hidden');
 }
 
-function onShowAnswer() {
-  answerShown = true;
-  document.getElementById('card-translation').classList.remove('hidden');
-  document.getElementById('show-answer').classList.add('hidden');
-  document.getElementById('answer-buttons').classList.remove('hidden');
-}
-
 function onAnswer(quality) {
   if (!answerShown) return;
   answerCard(session, quality);
@@ -102,25 +107,25 @@ function finishSession() {
 function bindForm() {
   document.getElementById('card-form').addEventListener('submit', (e) => {
     e.preventDefault();
+
     const hieroglyph = document.getElementById('input-hieroglyph').value;
     const pinyin = document.getElementById('input-pinyin').value;
     const translation = document.getElementById('input-translation').value;
     const tone = document.getElementById('input-tone').value;
 
     const card = createCard(hieroglyph, translation, pinyin, tone);
-    const errors = validateCard(card);
+    const errorBox = document.getElementById('form-error');
 
-    if (errors) {
-      const box = document.getElementById('form-error');
-      box.textContent = Object.values(errors).join('\n');
-      box.classList.remove('hidden');
-      return;
+    try {
+      assertValidCard(card);
+      addCard(card);
+      errorBox.classList.add('hidden');
+      e.target.reset();
+      renderAll();
+    } catch (err) {
+      errorBox.textContent = err.message;
+      errorBox.classList.remove('hidden');
     }
-
-    document.getElementById('form-error').classList.add('hidden');
-    addCard(card);
-    e.target.reset();
-    renderAll();
   });
 }
 
