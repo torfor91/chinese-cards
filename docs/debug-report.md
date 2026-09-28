@@ -151,3 +151,21 @@
 
 ## Выводы
 Все найденные ошибки исправлены. Приложение работает end-to-end без ошибок в консоли. Данные сохраняются между сессиями. SRS-алгоритм корректно увеличивает интервал.
+
+## Обработка исключений
+
+| № | Ситуация | Обработано | Тест | Результат |
+|---|---|---|---|---|
+| 1 | Пустой иероглиф | `assertValidCard` → `ValidationError` | Добавить карточку с пустым иероглифом | Плашка «Иероглиф: от 1 до 10 символов» |
+| 2 | Иероглиф 11 символов | `validateCard` | Ввести 11 символов | Ошибка валидации |
+| 3 | Тон = 5 | `validateCard` | Ввести тон 5 | Ошибка «Тон: 0–4» |
+| 4 | Переполнение localStorage | `StorageError` в `saveCards` | Заполнить localStorage | Ошибка в `form-error`, приложение живо |
+| 5 | Битый JSON в localStorage | `try/catch` в `loadCards` | Вручную испортить запись | `console.warn`, вернулся `[]` |
+| 6 | Сессия без карточек | `SessionError` в `startSession` | Нажать «Начать сессию» без карточек | `alert` «Нет карточек для повторения» |
+| 7 | Ответ без показа перевода | Флаг `answerShown` | Нажать «Легко» до показа | Кнопки скрыты, клик игнорируется |
+| 8 | Ошибка сохранения при ответе | `try/catch` в `onAnswer` | Симулировать `StorageError` | `alert`, сессия продолжается |
+
+**Скриншоты:**
+- `docs/screenshots/validation-error.png` — ValidationError в UI
+- `docs/screenshots/session-error.png` — SessionError через alert
+- `docs/screenshots/storage-error.png` — StorageError в UI
