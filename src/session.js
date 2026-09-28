@@ -7,9 +7,14 @@ import { loadCards, saveCards } from './storage.js';
  * Запускает сессию.
  * @returns {Object}
  */
+import { SessionError } from './exceptions.js';
+
 function startSession() {
   const all = loadCards();
   const due = getDueCards(all);
+  if (due.length === 0) {
+    throw new SessionError('Нет карточек для повторения');
+  }
   return {
     queue: due,
     currentIndex: 0,
