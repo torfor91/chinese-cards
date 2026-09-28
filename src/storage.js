@@ -6,14 +6,19 @@ const STORAGE_KEY = 'chinese-cards';
  * Сохраняет массив карточек.
  * @param {Array} cards
  */
+import { StorageError } from './exceptions.js';
+
 function saveCards(cards) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(cards));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(cards));
+  } catch (e) {
+    if (e.name === 'QuotaExceededError') {
+      throw new StorageError('Хранилище переполнено. Удалите старые карточки.');
+    }
+    throw new StorageError('Не удалось сохранить данные: ' + e.message);
+  }
 }
 
-/**
- * Загружает карточки.
- * @returns {Array}
- */
 function loadCards() {
   const raw = localStorage.getItem(STORAGE_KEY);
   if (!raw) return [];
@@ -21,7 +26,7 @@ function loadCards() {
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed : [];
   } catch (e) {
-    console.warn('Ошибка чтения localStorage:', e);
+    console.warn('Битый JSON в localStorage, сброс:', e);
     return [];
   }
 }
