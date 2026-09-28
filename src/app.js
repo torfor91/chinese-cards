@@ -90,8 +90,18 @@ function renderCard() {
 
 function onAnswer(quality) {
   if (!answerShown) return;
-  answerCard(session, quality);
-  renderCard();
+
+  try {
+    answerCard(session, quality);
+    renderCard();
+  } catch (err) {
+    if (err.name === 'StorageError') {
+      alert('Не удалось сохранить прогресс: ' + err.message);
+    } else {
+      alert('Ошибка при обработке ответа: ' + err.message);
+    }
+    if (DEBUG) console.error(err);
+  }
 }
 
 function finishSession() {
