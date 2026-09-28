@@ -33,6 +33,8 @@ function createCard(hieroglyph, translation, pinyin, tone) {
  * @param {Object} card
  * @returns {Object|null}
  */
+import { ValidationError } from './exceptions.js';
+
 function validateCard(card) {
   const errors = {};
 
@@ -58,4 +60,16 @@ function validateCard(card) {
   return Object.keys(errors).length > 0 ? errors : null;
 }
 
-export { createCard, validateCard };
+/**
+ * Проверяет карточку и выбрасывает ValidationError.
+ * @param {Object} card
+ * @throws {ValidationError}
+ */
+function assertValidCard(card) {
+  const errors = validateCard(card);
+  if (errors) {
+    throw new ValidationError(Object.values(errors).join('; '));
+  }
+}
+
+export { createCard, validateCard, assertValidCard };
