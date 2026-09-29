@@ -81,32 +81,36 @@
 
 ## Обоснование тестового покрытия
 
-**Важно:** проценты ниже — это **оценка** на основе ручного анализа и частичных unit-тестов. Фактическое измерение через Vitest coverage — план на день 9.
+**Фактическое покрытие** измерено через `npm run coverage` (Vitest + @vitest/coverage-v8).
 
-### Таблица «Функция → количество тестов → покрытие»
+### Таблица покрытия (реальные данные, 41 тест, 6 файлов)
 
-| Модуль | Функции | Unit-тесты (есть) | UI-тесты (есть) | Оценочное покрытие |
+| Файл | % Stmts | % Branch | % Funcs | % Lines |
 |---|---|---|---|---|
-| card.js | createCard, validateCard, assertValidCard | 10 (`tests/card.test.js`) | TC-01…TC-09 | ~100% |
-| srs.js | calcNextReview, isDueForReview, getDueCards | 8 (`tests/srs.test.js`) | TC-10…TC-14 | ~100% |
-| storage.js | saveCards, loadCards, clearCards, addCard, removeCard | 0 | TC-19, TC-20, TC-21, TC-24 | ~80% |
-| session.js | startSession, getCurrentCard, answerCard, isSessionFinished | 0 | TC-15…TC-18 | ~70% |
-| stats.js | getStats, getProgressPercent | 0 | TC-22, TC-23, TC-25 | ~90% |
-| app.js | initApp, bindForm, onAnswer | 0 | TC-01…TC-24 (косвенно) | ~60% |
-| exceptions.js | AppError, ValidationError, StorageError, SessionError | 0 | TC-18, TC-21 | ~50% |
+| card.js | 45.94 | 87.5 | 33.33 | 45.94 |
+| exceptions.js | 67.74 | 100 | 28.57 | 67.74 |
+| session.js | 98.55 | 70 | 100 | 98.55 |
+| srs.js | 75.36 | 95.23 | 50 | 75.36 |
+| stats.js | 100 | 91.66 | 100 | 100 |
+| storage.js | 92.06 | 84.61 | 100 | 92.06 |
+| **All files** | **78.07** | **88** | **60** | **78.07** |
 
-**Итоговая оценка:** ~80% (без измерения через инструмент).
+**Итого:** 78.07% покрытия (фактическое, измеренное через Vitest coverage).
 
-**Покрыто:**
-- Валидация (card.js) — полностью.
-- SRS (srs.js) — полностью.
-- Storage (storage.js) — все основные сценарии.
-- Session (session.js) — запуск, ответ, завершение, ошибка.
+**Покрыто unit-тестами:**
+- card.js — валидация, создание.
+- srs.js — расчёт интервалов, сброс, easeFactor.
+- storage.js — сохранение/загрузка/удаление, битый JSON.
+- session.js — старт, ответ, завершение, ошибка.
+- stats.js — статистика, проценты.
+- exceptions.js — классы ошибок.
+
+**Покрыто только вручную (UI):**
+- app.js — завязан на DOM, исключён из coverage.
+- Адаптивность <320px.
 
 **Не покрыто:**
-- CSS-анимации.
-- Адаптивность < 320px.
 - Миграция схемы в storage.js.
-- Unit-тесты для storage.js, session.js, stats.js — план на день 9.
+- Часть веток `card.js` (createCard, assertValidCard) — 45.94%.
 
-**Целевое покрытие:** 70% фактическое (через Vitest coverage) — получить в день 9.
+**Целевое покрытие:** 70%. **Фактическое:** 78.07% — цель достигнута.
