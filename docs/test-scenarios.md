@@ -81,16 +81,32 @@
 
 ## Обоснование тестового покрытия
 
+**Важно:** проценты ниже — это **оценка** на основе ручного анализа и частичных unit-тестов. Фактическое измерение через Vitest coverage — план на день 9.
+
+### Таблица «Функция → количество тестов → покрытие»
+
+| Модуль | Функции | Unit-тесты (есть) | UI-тесты (есть) | Оценочное покрытие |
+|---|---|---|---|---|
+| card.js | createCard, validateCard, assertValidCard | 10 (`tests/card.test.js`) | TC-01…TC-09 | ~100% |
+| srs.js | calcNextReview, isDueForReview, getDueCards | 8 (`tests/srs.test.js`) | TC-10…TC-14 | ~100% |
+| storage.js | saveCards, loadCards, clearCards, addCard, removeCard | 0 | TC-19, TC-20, TC-21, TC-24 | ~80% |
+| session.js | startSession, getCurrentCard, answerCard, isSessionFinished | 0 | TC-15…TC-18 | ~70% |
+| stats.js | getStats, getProgressPercent | 0 | TC-22, TC-23, TC-25 | ~90% |
+| app.js | initApp, bindForm, onAnswer | 0 | TC-01…TC-24 (косвенно) | ~60% |
+| exceptions.js | AppError, ValidationError, StorageError, SessionError | 0 | TC-18, TC-21 | ~50% |
+
+**Итоговая оценка:** ~80% (без измерения через инструмент).
+
 **Покрыто:**
-- Валидация (card.js) — 100%.
-- SRS (srs.js) — 100%.
-- Storage (storage.js) — 90% (кроме миграции схемы).
-- Session (session.js) — 80% (все основные сценарии).
-- Stats (stats.js) — 100%.
+- Валидация (card.js) — полностью.
+- SRS (srs.js) — полностью.
+- Storage (storage.js) — все основные сценарии.
+- Session (session.js) — запуск, ответ, завершение, ошибка.
 
 **Не покрыто:**
 - CSS-анимации.
 - Адаптивность < 320px.
-- Версионирование схемы в storage.js (задел на будущее).
+- Миграция схемы в storage.js.
+- Unit-тесты для storage.js, session.js, stats.js — план на день 9.
 
-**Оценка покрытия:** ~75%.
+**Целевое покрытие:** 70% фактическое (через Vitest coverage) — получить в день 9.
