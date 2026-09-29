@@ -1,4 +1,6 @@
 // validation.test.js — unit-тесты для validateCard
+import { describe, test, expect } from 'vitest';
+import { validateCard } from '../src/validation.js';
 
 const { validateCard } = require('../src/validation.js');
 

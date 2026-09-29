@@ -1,3 +1,6 @@
+import { describe, test, expect } from 'vitest';
+import { validateCard, createCard } from '../src/card.js';
+
 const { validateCard, createCard } = require('../src/card.js');
 
 describe('card.js', () => {

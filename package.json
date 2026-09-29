@@ -1,7 +1,6 @@
 {
   "name": "chinese-cards",
   "version": "1.0.0",
-  "description": "Приложение для изучения китайского языка с интервальным повторением",
   "type": "module",
   "scripts": {
     "test": "vitest run",
@@ -10,6 +9,7 @@
   },
   "devDependencies": {
     "vitest": "^2.1.1",
-    "@vitest/coverage-v8": "^2.1.1"
+    "@vitest/coverage-v8": "^2.1.1",
+    "jsdom": "^25.0.1"
   }
 }
