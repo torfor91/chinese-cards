@@ -69,23 +69,44 @@ function onShowAnswer() {
   document.getElementById('answer-buttons').classList.remove('hidden');
 }
 
-function renderCard() {
-  const card = getCurrentCard(session);
-  if (!card || isSessionFinished(session)) {
-    finishSession();
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function renderCardsList() {
+  const cards = loadCards();
+  const list = document.getElementById('cards-list');
+  document.getElementById('cards-count').textContent = cards.length;
+
+  if (cards.length === 0) {
+    list.innerHTML = '<p style="color:#888">Пока нет карточек. Добавьте первую.</p>';
     return;
   }
 
-  document.getElementById('card-current').textContent = session.currentIndex + 1;
-  document.getElementById('card-total').textContent = session.queue.length;
-  document.getElementById('card-hieroglyph').textContent = card.hieroglyph;
-  document.getElementById('card-pinyin').textContent = card.pinyin || '';
-  document.getElementById('card-translation').textContent = card.translation;
+  list.innerHTML = cards.map((c) => `
+    <div class="card-item">
+      <div class="card-item-hieroglyph">${escapeHtml(c.hieroglyph)}</div>
+      <div class="card-item-info">
+        <div class="card-item-translation">${escapeHtml(c.translation)}</div>
+        <div class="card-item-translation">${escapeHtml(c.pinyin || '')} · тон ${escapeHtml(c.tone)}</div>
+      </div>
+      <div class="card-item-actions">
+        <button data-id="${escapeHtml(c.id)}" title="Удалить">×</button>
+      </div>
+    </div>
+  `).join('');
 
-  answerShown = false;
-  document.getElementById('card-translation').classList.add('hidden');
-  document.getElementById('answer-buttons').classList.add('hidden');
-  document.getElementById('show-answer').classList.remove('hidden');
+  list.querySelectorAll('button[data-id]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      removeCard(btn.dataset.id);
+      renderAll();
+    });
+  });
 }
 
 function onAnswer(quality) {
