@@ -10,7 +10,6 @@
 |---|---|---|---|
 | validateCard | card.js | 10 | ✅ |
 | createCard | card.js | 1 | ✅ |
-| assertValidCard | card.js | косвенно | ⚠️ |
 | calcNextReview | srs.js | 6 | ✅ |
 | isDueForReview | srs.js | 2 | ✅ |
 | getDueCards | srs.js | 1 | ✅ |
@@ -28,9 +27,7 @@
 
 ## Непокрытые функции
 
-- `renderCardsList` — UI, покрытие вручную (TC-01).
-- `renderStats` — UI, покрытие вручную (TC-22…TC-25).
-- `onStartSession`, `onAnswer`, `onShowAnswer` — UI, покрытие вручную (TC-15…TC-18).
+- `renderCardsList`, `renderStats`, `onStartSession`, `onAnswer`, `onShowAnswer` — UI, покрытие вручную (TC-01…TC-28).
 - `escapeHtml` — покрытие через ручной TC-01 (XSS).
 - `assertValidCard` — вызывается косвенно через `bindForm`.
 
@@ -48,11 +45,11 @@
 
 ## Оценка покрытия
 
-- **Функции:** 17 из 22 (77%).
+- **Функции:** 16 из 21 (76%).
 - **Критические функции:** 100% (валидация, SRS, storage).
 - **UI-функции:** покрыты вручную (28 тест-кейсов).
-- **Общее покрытие кода:** 78.07%.
+- **Общее покрытие:** 78.07%.
 
 ## Вывод
 
-Критические бизнес-функции покрыты unit-тестами на 100%. UI-функции тестируются вручную по протоколам дня 9. Технический долг: `card.js` покрыт на 45.94% (не покрыты `createCard` и `assertValidCard`).
+Критические бизнес-функции покрыты unit-тестами на 100%. UI-функции тестируются вручную. Технический долг: `card.js` — 45.94% (не покрыты `createCard` и `assertValidCard`).
