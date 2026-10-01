@@ -1,8 +1,6 @@
 import { describe, test, expect } from 'vitest';
 import { calcNextReview, isDueForReview, getDueCards } from '../src/srs.js';
 
-const { calcNextReview, isDueForReview, getDueCards } = require('../src/srs.js');
-
 describe('srs.js', () => {
   describe('calcNextReview', () => {
     test('первый правильный ответ → interval 1', () => {

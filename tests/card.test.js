@@ -1,7 +1,5 @@
 import { describe, test, expect } from 'vitest';
-import { validateCard, createCard } from '../src/card.js';
-
-const { validateCard, createCard } = require('../src/card.js');
+import { validateCard, createCard, assertValidCard } from '../src/card.js';
 
 describe('card.js', () => {
   describe('validateCard', () => {
@@ -63,6 +61,58 @@ describe('card.js', () => {
       expect(card.hieroglyph).toBe('好');
       expect(card.easeFactor).toBe(2.5);
       expect(card.repetitions).toBe(0);
+    });
+
+    test('триммит пробелы в полях', () => {
+      const card = createCard('  好  ', '  хорошо  ', '  hǎo  ', 3);
+      expect(card.hieroglyph).toBe('好');
+      expect(card.translation).toBe('хорошо');
+      expect(card.pinyin).toBe('hǎo');
+    });
+
+    test('приводит tone к числу', () => {
+      const card = createCard('好', 'хорошо', 'hǎo', '3');
+      expect(card.tone).toBe(3);
+      expect(typeof card.tone).toBe('number');
+    });
+
+    test('пустой pinyin → пустая строка', () => {
+      const card = createCard('好', 'хорошо', '', 3);
+      expect(card.pinyin).toBe('');
+    });
+
+    test('id уникален для двух карточек', () => {
+      const a = createCard('好', 'хорошо', 'hǎo', 3);
+      const b = createCard('好', 'хорошо', 'hǎo', 3);
+      expect(a.id).not.toBe(b.id);
+    });
+  });
+
+  describe('assertValidCard', () => {
+    test('валидная карточка — не выбрасывает', () => {
+      const card = { hieroglyph: '好', translation: 'хорошо', pinyin: 'hǎo', tone: 3 };
+      expect(() => assertValidCard(card)).not.toThrow();
+    });
+
+    test('пустой иероглиф — выбрасывает ValidationError', () => {
+      const card = { hieroglyph: '', translation: 'хорошо', tone: 3 };
+      expect(() => assertValidCard(card)).toThrow('Иероглиф');
+    });
+
+    test('тон 5 — выбрасывает ValidationError', () => {
+      const card = { hieroglyph: '好', translation: 'хорошо', tone: 5 };
+      expect(() => assertValidCard(card)).toThrow('Тон');
+    });
+
+    test('ошибка имеет name ValidationError и code VALIDATION_ERROR', () => {
+      const card = { hieroglyph: '', translation: 'хорошо', tone: 3 };
+      try {
+        assertValidCard(card);
+        throw new Error('Должно было выбросить');
+      } catch (e) {
+        expect(e.name).toBe('ValidationError');
+        expect(e.code).toBe('VALIDATION_ERROR');
+      }
     });
   });
 });

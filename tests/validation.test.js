@@ -2,8 +2,6 @@
 import { describe, test, expect } from 'vitest';
 import { validateCard } from '../src/validation.js';
 
-const { validateCard } = require('../src/validation.js');
-
 describe('validateCard', () => {
   test('валидная карточка возвращает null', () => {
     const card = { hieroglyph: '你好', translation: 'привет', pinyin: 'nǐ hǎo', tone: 3 };
