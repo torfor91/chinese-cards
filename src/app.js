@@ -69,6 +69,11 @@ function onShowAnswer() {
   document.getElementById('answer-buttons').classList.remove('hidden');
 }
 
+/**
+ * Экранирует HTML-символы в строке для безопасной вставки в innerHTML.
+ * @param {string} str - исходная строка
+ * @returns {string} экранированная строка
+ */
 function escapeHtml(str) {
   return String(str)
     .replace(/&/g, '&amp;')
@@ -77,7 +82,6 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
 }
-
 function renderCardsList() {
   const cards = loadCards();
   const list = document.getElementById('cards-list');
