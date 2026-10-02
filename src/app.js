@@ -50,16 +50,31 @@ function onStartSession() {
     session = startSession();
   } catch (e) {
     if (e.name === 'SessionError') {
-      alert(e.message);
+      showSessionMessage(e.message);
       return;
     }
-    alert('Неизвестная ошибка: ' + e.message);
+    showSessionMessage('Неизвестная ошибка: ' + e.message);
     return;
   }
   answerShown = false;
   document.getElementById('session-empty').classList.add('hidden');
   document.getElementById('card-view').classList.remove('hidden');
   renderCard();
+}
+
+/**
+ * Показывает сообщение об ошибке сессии вместо alert.
+ * @param {string} message
+ */
+function showSessionMessage(message) {
+  const box = document.getElementById('session-message');
+  if (!box) {
+    alert(message);
+    return;
+  }
+  box.textContent = message;
+  box.classList.remove('hidden');
+  setTimeout(() => box.classList.add('hidden'), 4000);
 }
 
 function onShowAnswer() {
