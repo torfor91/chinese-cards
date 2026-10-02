@@ -1,7 +1,7 @@
 // app.js — точка входа
 
-import { createCard, validateCard, assertValidCard } from './card.js';
-import { addCard, loadCards, removeCard, saveCards } from './storage.js';
+import { createCard, assertValidCard } from './card.js';
+import { addCard, loadCards, removeCard } from './storage.js';
 import { startSession, getCurrentCard, answerCard, isSessionFinished } from './session.js';
 import { getStats, getProgressPercent } from './stats.js';
 
@@ -85,72 +85,25 @@ function onShowAnswer() {
 }
 
 /**
- * Экранирует HTML-символы в строке для безопасной вставки в innerHTML.
- * @param {string} str - исходная строка
- * @returns {string} экранированная строка
+ * Отображает текущую карточку сессии или завершает её.
  */
-function escapeHtml(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
-function renderCardsList() {
-  const cards = loadCards();
-  const list = document.getElementById('cards-list');
-  document.getElementById('cards-count').textContent = cards.length;
-
-  if (cards.length === 0) {
-    renderEmptyState(list);
+function renderCard() {
+  const card = getCurrentCard(session);
+  if (!card || isSessionFinished(session)) {
+    finishSession();
     return;
   }
 
-  list.innerHTML = cards.map(renderCardItem).join('');
-  bindCardActions(list);
-}
+  document.getElementById('card-current').textContent = session.currentIndex + 1;
+  document.getElementById('card-total').textContent = session.queue.length;
+  document.getElementById('card-hieroglyph').textContent = card.hieroglyph;
+  document.getElementById('card-pinyin').textContent = card.pinyin || '';
+  document.getElementById('card-translation').textContent = card.translation;
 
-/**
- * Рисует пустое состояние списка карточек.
- * @param {HTMLElement} list
- */
-function renderEmptyState(list) {
-  list.innerHTML = '<p style="color:#888">Пока нет карточек. Добавьте первую.</p>';
-}
-
-/**
- * Возвращает HTML одного элемента карточки.
- * @param {Object} c - карточка
- * @returns {string}
- */
-function renderCardItem(c) {
-  return `
-    <div class="card-item">
-      <div class="card-item-hieroglyph">${escapeHtml(c.hieroglyph)}</div>
-      <div class="card-item-info">
-        <div class="card-item-translation">${escapeHtml(c.translation)}</div>
-        <div class="card-item-translation">${escapeHtml(c.pinyin || '')} · тон ${escapeHtml(c.tone)}</div>
-      </div>
-      <div class="card-item-actions">
-        <button data-id="${escapeHtml(c.id)}" title="Удалить">×</button>
-      </div>
-    </div>
-  `;
-}
-
-/**
- * Навешивает обработчики удаления на кнопки.
- * @param {HTMLElement} list
- */
-function bindCardActions(list) {
-  list.querySelectorAll('button[data-id]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      removeCard(btn.dataset.id);
-      renderAll();
-    });
-  });
+  answerShown = false;
+  document.getElementById('card-translation').classList.add('hidden');
+  document.getElementById('answer-buttons').classList.add('hidden');
+  document.getElementById('show-answer').classList.remove('hidden');
 }
 
 function onAnswer(quality) {
@@ -211,29 +164,67 @@ function renderAll() {
   renderStats();
 }
 
+/**
+ * Экранирует HTML-символы в строке для безопасной вставки в innerHTML.
+ * @param {string} str - исходная строка
+ * @returns {string} экранированная строка
+ */
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function renderCardsList() {
   const cards = loadCards();
   const list = document.getElementById('cards-list');
   document.getElementById('cards-count').textContent = cards.length;
 
   if (cards.length === 0) {
-    list.innerHTML = '<p style="color:#888">Пока нет карточек. Добавьте первую.</p>';
+    renderEmptyState(list);
     return;
   }
 
-  list.innerHTML = cards.map((c) => `
+  list.innerHTML = cards.map(renderCardItem).join('');
+  bindCardActions(list);
+}
+
+/**
+ * Рисует пустое состояние списка карточек.
+ * @param {HTMLElement} list
+ */
+function renderEmptyState(list) {
+  list.innerHTML = '<p style="color:#888">Пока нет карточек. Добавьте первую.</p>';
+}
+
+/**
+ * Возвращает HTML одного элемента карточки.
+ * @param {Object} c - карточка
+ * @returns {string}
+ */
+function renderCardItem(c) {
+  return `
     <div class="card-item">
-      <div class="card-item-hieroglyph">${c.hieroglyph}</div>
+      <div class="card-item-hieroglyph">${escapeHtml(c.hieroglyph)}</div>
       <div class="card-item-info">
-        <div class="card-item-translation">${c.translation}</div>
-        <div class="card-item-translation">${c.pinyin || ''} · тон ${c.tone}</div>
+        <div class="card-item-translation">${escapeHtml(c.translation)}</div>
+        <div class="card-item-translation">${escapeHtml(c.pinyin || '')} · тон ${escapeHtml(c.tone)}</div>
       </div>
       <div class="card-item-actions">
-        <button data-id="${c.id}" title="Удалить">×</button>
+        <button data-id="${escapeHtml(c.id)}" title="Удалить">×</button>
       </div>
     </div>
-  `).join('');
+  `;
+}
 
+/**
+ * Навешивает обработчики удаления на кнопки.
+ * @param {HTMLElement} list
+ */
+function bindCardActions(list) {
   list.querySelectorAll('button[data-id]').forEach((btn) => {
     btn.addEventListener('click', () => {
       removeCard(btn.dataset.id);
