@@ -97,17 +97,36 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
 }
+
 function renderCardsList() {
   const cards = loadCards();
   const list = document.getElementById('cards-list');
   document.getElementById('cards-count').textContent = cards.length;
 
   if (cards.length === 0) {
-    list.innerHTML = '<p style="color:#888">Пока нет карточек. Добавьте первую.</p>';
+    renderEmptyState(list);
     return;
   }
 
-  list.innerHTML = cards.map((c) => `
+  list.innerHTML = cards.map(renderCardItem).join('');
+  bindCardActions(list);
+}
+
+/**
+ * Рисует пустое состояние списка карточек.
+ * @param {HTMLElement} list
+ */
+function renderEmptyState(list) {
+  list.innerHTML = '<p style="color:#888">Пока нет карточек. Добавьте первую.</p>';
+}
+
+/**
+ * Возвращает HTML одного элемента карточки.
+ * @param {Object} c - карточка
+ * @returns {string}
+ */
+function renderCardItem(c) {
+  return `
     <div class="card-item">
       <div class="card-item-hieroglyph">${escapeHtml(c.hieroglyph)}</div>
       <div class="card-item-info">
@@ -118,8 +137,14 @@ function renderCardsList() {
         <button data-id="${escapeHtml(c.id)}" title="Удалить">×</button>
       </div>
     </div>
-  `).join('');
+  `;
+}
 
+/**
+ * Навешивает обработчики удаления на кнопки.
+ * @param {HTMLElement} list
+ */
+function bindCardActions(list) {
   list.querySelectorAll('button[data-id]').forEach((btn) => {
     btn.addEventListener('click', () => {
       removeCard(btn.dataset.id);
