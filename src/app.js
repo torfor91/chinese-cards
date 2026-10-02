@@ -5,7 +5,7 @@ import { addCard, loadCards, removeCard, saveCards } from './storage.js';
 import { startSession, getCurrentCard, answerCard, isSessionFinished } from './session.js';
 import { getStats, getProgressPercent } from './stats.js';
 
-const DEBUG = true;
+const DEBUG = localStorage.getItem('DEBUG') === 'true' || false;
 
 let session = null;
 let answerShown = false;
