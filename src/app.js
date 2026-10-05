@@ -123,7 +123,7 @@ function onAnswer(quality) {
 }
 
 function finishSession() {
-  alert(`Сессия завершена!\nВерно: ${session.correctCount}\nОшибок: ${session.wrongCount}`);
+  showSessionMessage(`Сессия завершена! Верно: ${session.correctCount}, ошибок: ${session.wrongCount}`);
   session = null;
   document.getElementById('card-view').classList.add('hidden');
   document.getElementById('session-empty').classList.remove('hidden');
