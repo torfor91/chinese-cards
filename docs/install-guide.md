@@ -21,3 +21,16 @@
 ```bash
 git clone https://github.com/torfor91/chinese-cards.git
 cd chinese-cards
+
+## 3. Развёртывание
+
+### 3.1. Локальное развёртывание
+См. раздел 2.3.
+
+### 3.2. VPS-развёртывание
+
+Приложение развёрнуто на VPS-сервере. Для развёртывания:
+
+1. Клонировать репозиторий на сервер:
+   ```bash
+   git clone https://github.com/torfor91/chinese-cards.git
