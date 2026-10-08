@@ -34,3 +34,22 @@ cd chinese-cards
 1. Клонировать репозиторий на сервер:
    ```bash
    git clone https://github.com/torfor91/chinese-cards.git
+
+2. Установить зависимости (если нужны тесты):
+
+bash
+npm install
+3. Настроить веб-сервер (nginx):
+
+nginx
+server {
+  listen 80;
+  server_name your-domain.com;
+  root /var/www/chinese-cards/src;
+  index index.html;
+}
+4. Перезапустить nginx:
+
+bash
+sudo systemctl restart nginx
+Важно: приложение использует ES-модули. Файлы должны отдаваться по HTTP/HTTPS, а не через file://.
