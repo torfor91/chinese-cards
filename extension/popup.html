@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <title>Китайский тренажёр</title>
+  <style>
+    body { font-family: system-ui, sans-serif; width: 240px; padding: 12px; color: #241f1a; }
+    h1 { font-size: 14px; margin: 0 0 8px; }
+    p { font-size: 12px; color: #6b6354; margin: 0 0 10px; }
+    button { width: 100%; padding: 8px; border: none; border-radius: 6px; background: #b52825; color: #fff; font-size: 13px; cursor: pointer; }
+    button:disabled { opacity: 0.5; cursor: default; }
+    #status { font-size: 11px; color: #6b6354; margin-top: 8px; }
+    a { color: #b52825; }
+  </style>
+</head>
+<body>
+  <h1>墨 Китайский тренажёр</h1>
+  <p>Выделите текст на странице, затем нажмите кнопку — слово откроется в переводчике приложения.</p>
+  <button id="send">Добавить выделенный текст</button>
+  <p id="status"></p>
+  <p><a href="options.html" target="_blank">Настроить адрес приложения</a></p>
+  <script src="popup.js"></script>
+</body>
+</html>
